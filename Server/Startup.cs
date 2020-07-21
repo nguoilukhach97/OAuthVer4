@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +11,13 @@ namespace Server
        
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication("CookieAuth")
-                .AddCookie("CookieAuth",config=>
-                {
-                    config.Cookie.Name = "Grandmas.Cookie";
-                    config.LoginPath = "/Home/Authenticate";
+            services.AddAuthentication("OAuth")
+                .AddJwtBearer("OAuth", config=>
+                { 
+                    
                 });
+            services.AddControllersWithViews();
+                
         }
 
        
