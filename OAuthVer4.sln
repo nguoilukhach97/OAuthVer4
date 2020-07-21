@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthVer4", "OAuthVer4\OAuthVer4.csproj", "{E58D4E52-563F-4261-8702-7ECF820B713C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OAuth", "OAuth", "{C615E60C-729D-4DA6-92F5-088EBB673FB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{08ABE410-E7EE-4766-9C98-F234A5EE3A22}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basic", "Basic", "{BBF405B5-AFBE-4330-B910-343E6EAB6255}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E58D4E52-563F-4261-8702-7ECF820B713C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E58D4E52-563F-4261-8702-7ECF820B713C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E58D4E52-563F-4261-8702-7ECF820B713C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E58D4E52-563F-4261-8702-7ECF820B713C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08ABE410-E7EE-4766-9C98-F234A5EE3A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08ABE410-E7EE-4766-9C98-F234A5EE3A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08ABE410-E7EE-4766-9C98-F234A5EE3A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08ABE410-E7EE-4766-9C98-F234A5EE3A22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E58D4E52-563F-4261-8702-7ECF820B713C} = {BBF405B5-AFBE-4330-B910-343E6EAB6255}
+		{08ABE410-E7EE-4766-9C98-F234A5EE3A22} = {C615E60C-729D-4DA6-92F5-088EBB673FB9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {003ECABB-5DF8-415E-9EAD-AF86A0E912F9}
+	EndGlobalSection
+EndGlobal
