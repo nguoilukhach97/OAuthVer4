@@ -16,7 +16,7 @@ namespace Server.Controllers
             return View();
         }
         [Authorize]
-        public IActionResult Secrect()
+        public IActionResult Secret()
         {
             return View();
         }
