@@ -10,9 +10,9 @@ namespace Server.Controllers
     public class SecretController : Controller
     {
         [Authorize]
-        public IActionResult Index()
+        public string Index()
         {
-            return View();
+            return "secret message";
         }
     }
 }
