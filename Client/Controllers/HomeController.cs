@@ -28,23 +28,13 @@ namespace Client.Controllers
         [Authorize]
         public async Task<IActionResult> Secret()
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
-            var serverClient = _httpClientFactory.CreateClient();
+            var serverResponse =  
+                await AccessTokenRefreshWrapper(()=> SecuredGetRequest("https://localhost:44396/secret/index"));
 
-            var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+            var apiResponse =
+                await AccessTokenRefreshWrapper(() => SecuredGetRequest("https://localhost:44398/secret/index"));
 
-            serverClient.DefaultRequestHeaders.Add("Authorization",$"Bearer {token}");
-
-            var serverResponse = await serverClient.GetAsync("https://localhost:44396/secret/index");
-            await RefreshAccessToken();
-
-            var apiClient = _httpClientFactory.CreateClient();
-
-            token = await HttpContext.GetTokenAsync("access_token");
-            apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var apiResponse = await apiClient.GetAsync("https://localhost:44398/secret/index");
-
+            
             return View();
         }
 
@@ -60,10 +50,21 @@ namespace Client.Controllers
             return await client.GetAsync(url);
         }
 
-        public async Task<HttpResponseMessage> RefreshAccessToken(Func<Task<HttpResponseMessage>> requestAction)
+        public async Task<HttpResponseMessage> AccessTokenRefreshWrapper(Func<Task<HttpResponseMessage>> initialRequest)
         {
+            var response = await initialRequest();
 
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                await RefreshAccessToken();
 
+                response = await initialRequest();
+            }
+            return response;
+        }
+
+        private async Task RefreshAccessToken()
+        {
             var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
 
             var refreshTokenClient = _httpClientFactory.CreateClient();
@@ -74,20 +75,21 @@ namespace Client.Controllers
                 ["refresh_token"] = refreshToken
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:44396/oauth/token") {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:44396/oauth/token")
+            {
                 Content = new FormUrlEncodedContent(requestData)
             };
 
             var basicCredentials = "username:password";
             var encodedCredentials = Encoding.UTF8.GetBytes(basicCredentials);
             var base64Credentials = Convert.ToBase64String(encodedCredentials);
-            
-            request.Headers.Add("Authorization",$"Basic {base64Credentials}");
+
+            request.Headers.Add("Authorization", $"Basic {base64Credentials}");
 
             var response = await refreshTokenClient.SendAsync(request);
 
             var responsString = await response.Content.ReadAsStringAsync();
-            var responseData = JsonConvert.DeserializeObject<Dictionary<string,string>>(responsString);
+            var responseData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responsString);
 
             var newAccessToken = responseData.GetValueOrDefault("access_token");
             var newRefreshToken = responseData.GetValueOrDefault("refresh_token");
@@ -97,9 +99,7 @@ namespace Client.Controllers
             authInfo.Properties.UpdateTokenValue("access_token", newAccessToken);
             authInfo.Properties.UpdateTokenValue("refresh_token", newRefreshToken);
 
-            await HttpContext.SignInAsync("ClientCookie", authInfo.Principal, authInfo.Properties );
-
-            return "";
+            await HttpContext.SignInAsync("ClientCookie", authInfo.Principal, authInfo.Properties);
         }
     }
 }
