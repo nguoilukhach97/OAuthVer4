@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -43,11 +44,11 @@ namespace Server.Controllers
             return Redirect($"{redirectUri}{query.ToString()}");
         }
 
-        public async Task<IActionResult> Token(string username,
+        public async Task<IActionResult> Token(string grant_type,
             string code,
             string redirect_uri,
-            string client_id
-            )
+            string client_id,
+            string refresh_token)
         {
 
             // some machanism for validating the code
@@ -73,7 +74,10 @@ namespace Server.Controllers
                 Constants.Audiance,
                 claims,
                 notBefore: DateTime.Now,
-                expires: DateTime.Now.AddHours(1),
+                expires: grant_type == "refresh_token"
+                    ? DateTime.Now.AddMinutes(5)
+                    : DateTime.Now.AddMilliseconds(1),
+
                 signingCredentials
                 );
 
@@ -84,7 +88,7 @@ namespace Server.Controllers
                 access_token,
                 token_type="Bearer",
                 raw_claim = "oauthTutorial",
-
+                refresh_token = "RefreshTokenSampleValueSomething77"
             };
 
             var responseJson = JsonConvert.SerializeObject(responseObject);
@@ -93,6 +97,17 @@ namespace Server.Controllers
             await Response.Body.WriteAsync(responseBytes, 0 , responseBytes.Length);
 
             return Redirect(redirect_uri);
+        }
+
+        [Authorize]
+        public IActionResult Validate()
+        {
+            if (HttpContext.Request.Query.TryGetValue("access_token",out var accessToken))
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
     }
 }
