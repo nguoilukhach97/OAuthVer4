@@ -22,14 +22,18 @@ namespace Client
             services.AddAuthentication(config =>
             {
                 // we check the cookie to confirm that we are authenticated
+                // kiem tra cokie de xac nhan rang da dc xac thuc authentication
+                
                 config.DefaultAuthenticateScheme = "ClientCookie";
                 // when you sign in we will deal out a cookie
+                //  khi dang nhap xu ly cookie
                 config.DefaultSignInScheme = "ClientCookie";
 
                 // use this to check if we are allowed to do something
+
+                // kiem tra xem dduoc phep lam gi
                 config.DefaultChallengeScheme = "OurServer";
-            })
-                .AddCookie("ClientCookie")
+            }).AddCookie("ClientCookie")
                 .AddOAuth("OurServer",config => 
                 {
                     config.ClientId = "client_id";
